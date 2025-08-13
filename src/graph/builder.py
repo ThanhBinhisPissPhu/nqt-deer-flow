@@ -93,7 +93,7 @@ from langchain_core.messages import AnyMessage, ToolMessage
 from langgraph.graph.message import add_messages
 from langchain_core.tools import tool
 from langchain_tavily import TavilySearch
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 
 load_dotenv(override=True)
 gemini_api = os.getenv("GOOGLE_API_KEY")
@@ -202,37 +202,26 @@ TOOLS_BY_NAME = {
     "web_search_tool": web_search_tool,
 }
 
-def load_gemini(temperature=.0, model_name="gemini-flash", verbose=True, max_retries=3, timeout=None):
-    if model_name == "gemini-flash":
-        llm =  ChatGoogleGenerativeAI(
-            model="gemini-2.5-flash-preview-05-20",
-            temperature=temperature,
-            top_p=0.01,
-            top_k=1,
-            api_key=gemini_api,
-            verbose=verbose,
-            max_retries=max_retries,
-            timeout=timeout
-        )
-    elif model_name == "gemini-pro":
-        llm = ChatGoogleGenerativeAI(
-            model="gemini-2.5-pro-preview-05-06",
-            temperature=temperature,
-            top_p=0.01,
-            top_k=1,
-            api_key=gemini_api,
-            verbose=verbose,
-            max_retries=max_retries,
-            timeout=timeout
-        )   
+def load_gemini(temperature=.0, model_name="gpt-4o", verbose=True, max_retries=3, timeout=None):
+    llm = ChatOpenAI(
+        model=model_name,
+        temperature=0,
+        max_tokens=None,
+        timeout=None,
+        max_retries=2,
+        # api_key="...",  # if you prefer to pass api key in directly instaed of using env vars
+        # base_url="...",
+        # organization="...",
+        # other params...
+    )
     print(f'Successfully loaded {model_name} model')
     return llm
 
-gemini_flash = load_gemini(model_name='gemini-flash')
-gemini_flash_with_tools = gemini_flash.bind_tools(TOOLS)
+gpt_4o = load_gemini(model_name='gpt-4o')
+gpt_4o_with_tools = gpt_4o.bind_tools(TOOLS)
 
 
-coordinator_node = CoordinatorNode(gemini_flash_with_tools)
+coordinator_node = CoordinatorNode(gpt_4o_with_tools)
 tool_node = ToolsNode(TOOLS_BY_NAME)
 
 
