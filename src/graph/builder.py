@@ -97,6 +97,7 @@ from langchain_openai import ChatOpenAI
 
 load_dotenv(override=True)
 gemini_api = os.getenv("GOOGLE_API_KEY")
+openrouter_api = os.getenv("OPENROUTER_API_KEY")
 MAX_RECURSION_DEPTH=3
 
 class AgentState(TypedDict):
@@ -204,13 +205,13 @@ TOOLS_BY_NAME = {
 
 def load_gpt(temperature=.0, model_name="gpt-4o", verbose=True, max_retries=3, timeout=None):
     llm = ChatOpenAI(
-        model=model_name,
+        # model=model_name,
         temperature=0,
         max_tokens=None,
         timeout=None,
         max_retries=2,
-        # api_key="...",  # if you prefer to pass api key in directly instaed of using env vars
-        # base_url="...",
+        api_key=openrouter_api,  # if you prefer to pass api key in directly instaed of using env vars
+        base_url="https://openrouter.ai/api/v1",
         # organization="...",
         # other params...
     )
