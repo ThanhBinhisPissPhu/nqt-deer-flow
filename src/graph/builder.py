@@ -202,7 +202,7 @@ TOOLS_BY_NAME = {
     "web_search_tool": web_search_tool,
 }
 
-def load_gemini(temperature=.0, model_name="gpt-4o", verbose=True, max_retries=3, timeout=None):
+def load_gpt(temperature=.0, model_name="gpt-4o", verbose=True, max_retries=3, timeout=None):
     llm = ChatOpenAI(
         model=model_name,
         temperature=0,
@@ -217,7 +217,7 @@ def load_gemini(temperature=.0, model_name="gpt-4o", verbose=True, max_retries=3
     print(f'Successfully loaded {model_name} model')
     return llm
 
-gpt_4o = load_gemini(model_name='gpt-4o')
+gpt_4o = load_gpt(model_name='gpt-4o')
 gpt_4o_with_tools = gpt_4o.bind_tools(TOOLS)
 
 
